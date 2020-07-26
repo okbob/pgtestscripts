@@ -1,0 +1,136 @@
+#!/usr/bin/bash
+
+sudo date
+
+PGUSER=$USERNAME
+
+cd /home/pavel/src/postgresql.master/
+
+case $1 in
+  "9.4")
+    export GITBRANCH='REL9_4_STABLE'
+    export PREFIX="/usr/local/pgsql/9.4"
+    export PORT="5494"
+    export STARTSCRIPTNAME="pgsql.94"
+    export PSQLNAME="psql-9.4"
+    ;;
+
+  "9.5")
+    export GITBRANCH='REL9_5_STABLE'
+    export PREFIX="/usr/local/pgsql/9.5"
+    export PORT="5495"
+    export STARTSCRIPTNAME="pgsql.95"
+    export PSQLNAME="psql-9.5"
+    ;;
+
+  "9.6")
+    export GITBRANCH='REL9_6_STABLE'
+    export PREFIX="/usr/local/pgsql/9.6"
+    export PORT="5496"
+    export STARTSCRIPTNAME="pgsql.96"
+    export PSQLNAME="psql-9.6"
+    ;;
+
+  "10")
+    export GITBRANCH='REL_10_STABLE'
+    export PREFIX="/usr/local/pgsql/10"
+    export PORT="5410"
+    export STARTSCRIPTNAME="pgsql.10"
+    export PSQLNAME="psql-10"
+    ;;
+
+  "11")
+    export GITBRANCH='REL_11_STABLE'
+    export PREFIX="/usr/local/pgsql/11"
+    export PORT="5411"
+    export STARTSCRIPTNAME="pgsql.11"
+    export PSQLNAME="psql-11"
+    ;;
+
+  "12")
+    export GITBRANCH='REL_12_STABLE'
+    export PREFIX="/usr/local/pgsql/12"
+    export PORT="5412"
+    export STARTSCRIPTNAME="pgsql.12"
+    export PSQLNAME="psql-12"
+    ;;
+
+  "13")
+    export GITBRANCH='REL_13_STABLE'
+    export PREFIX="/usr/local/pgsql/13"
+    export PORT="5413"
+    export STARTSCRIPTNAME="pgsql.13"
+    export PSQLNAME="psql-13"
+    ;;
+
+  "master")
+    export GITBRANCH='master'
+    export PREFIX="/usr/local/pgsql/master"
+    export PORT="5432"
+    export STARTSCRIPTNAME="pgsql.master"
+    export PSQLNAME="psql"
+    ;;
+
+esac
+
+git checkout $GITBRANCH
+git pull
+
+if [[ $? -ne 0 ]]; then
+	exit 1
+fi
+
+git stash
+git clean -f -x -d
+
+./configure --enable-tap-tests --enable-debug  \
+  CFLAGS="-Wall -Wmissing-prototypes -Wdeclaration-after-statement  -Wendif-labels -Wmissing-format-attribute -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -g -O2 -Werror=switch" \
+  --with-libxml  --with-python --enable-cassert --prefix=$PREFIX --with-pgport=$PORT
+
+if [[ $? -ne 0 ]]; then
+	exit 1
+fi
+
+make clean
+make all -j 4
+
+if [[ $? -ne 0 ]]; then
+	exit 1
+fi
+
+if [[ -f "/etc/init.d/$STARTSCRIPTNAME" ]]; then
+  sudo /etc/init.d/$STARTSCRIPTNAME stop
+fi
+
+sudo rm -R -f "$PREFIX/include"
+sudo make install
+
+sudo rm -R -f "$PREFIX/data"
+
+sudo mkdir "$PREFIX/data"
+sudo chown postgres:postgres "$PREFIX/data"
+sudo su - postgres -c "$PREFIX/bin/initdb -D $PREFIX/data"
+
+if [[ $? -ne 0 ]]; then
+	exit 1
+fi
+
+sudo rm -f $STARTSCRIPT
+
+sudo cat contrib/start-scripts/linux | \
+  sed "s+^prefix=/usr/local/pgsql+prefix=$PREFIX+" | \
+  sed "s+^PGDATA=\"/usr/local/pgsql/data\"+PGDATA=$PREFIX/data+" > /tmp/$STARTSCRIPTNAME
+
+sudo mv /tmp/$STARTSCRIPTNAME /etc/init.d
+sudo chmod +x /etc/init.d/$STARTSCRIPTNAME
+
+if [[ $? -ne 0 ]]; then
+	exit 1
+fi
+
+sudo /etc/init.d/$STARTSCRIPTNAME start
+
+until sudo su - postgres -c "$PREFIX/bin/pg_isready" ; do echo ; done
+sudo su - postgres -c "$PREFIX/bin/psql -c \"create user $PGUSER login superuser\""
+
+ln -f -s $PREFIX/bin/psql $HOME/bin/$PSQLNAME

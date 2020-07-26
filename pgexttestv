@@ -1,0 +1,85 @@
+#!/usr/bin/bash
+
+case $1 in
+  "9.4")
+    export PREFIX="/usr/local/pgsql/9.4"
+    export STARTSCRIPTNAME="pgsql.94"
+    ;;
+
+  "9.5")
+    export PREFIX="/usr/local/pgsql/9.5"
+    export STARTSCRIPTNAME="pgsql.95"
+    ;;
+
+  "9.6")
+    export PREFIX="/usr/local/pgsql/9.6"
+    export STARTSCRIPTNAME="pgsql.96"
+    ;;
+
+  "10")
+    export PREFIX="/usr/local/pgsql/10"
+    export STARTSCRIPTNAME="pgsql.10"
+    ;;
+
+  "11")
+    export PREFIX="/usr/local/pgsql/11"
+    export STARTSCRIPTNAME="pgsql.11"
+    ;;
+
+  "12")
+    export PREFIX="/usr/local/pgsql/12"
+    export STARTSCRIPTNAME="pgsql.12"
+    ;;
+
+  "13")
+    export PREFIX="/usr/local/pgsql/13"
+    export STARTSCRIPTNAME="pgsql.13"
+    ;;
+
+  "master")
+    export PREFIX="/usr/local/pgsql/master"
+    export STARTSCRIPTNAME="pgsql.master"
+    ;;
+
+esac
+
+echo "============== test against $PREFIX =============="
+
+sudo su - postgres -c "$PREFIX/bin/pg_isready"
+IS_RUNNING=$?
+
+if [[ $IS_RUNNING -ne 0 ]]; then
+
+  sudo /etc/init.d/$STARTSCRIPTNAME start
+
+  until sudo su - postgres -c "$PREFIX/bin/pg_isready" ; do echo ; done
+
+  if [[ $? -ne 0 ]]; then
+    exit 1
+  fi
+fi
+
+export PATH="$PREFIX/bin:$PATH"
+
+make clean
+make all
+sudo env "PATH=$PATH" make install
+
+make installcheck
+
+if [[ $? -ne 0 ]]; then
+
+  if [[ $IS_RUNNING -ne 0 ]]; then
+
+    sudo /etc/init.d/$STARTSCRIPTNAME stop
+
+  fi
+
+  exit 1
+fi
+
+if [[ $IS_RUNNING -ne 0 ]]; then
+
+  sudo /etc/init.d/$STARTSCRIPTNAME stop
+
+fi

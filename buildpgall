@@ -1,0 +1,10 @@
+#!/usr/bin/bash
+
+buildpgv 9.4
+buildpgv 9.5
+buildpgv 9.6
+buildpgv 10
+buildpgv 11
+buildpgv 12
+buildpgv 13
+buildpgv master

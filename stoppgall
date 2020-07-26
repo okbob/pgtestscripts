@@ -1,0 +1,25 @@
+#!/usr/bin/bash
+
+echo "stop 9.4"
+sudo /etc/init.d/pgsql.94 stop
+
+echo "stop 9.5"
+sudo /etc/init.d/pgsql.95 stop
+
+echo "stop 9.6"
+sudo /etc/init.d/pgsql.96 stop
+
+echo "stop 10"
+sudo /etc/init.d/pgsql.10 stop
+
+echo "stop 11"
+sudo /etc/init.d/pgsql.11 stop
+
+echo "stop 12"
+sudo /etc/init.d/pgsql.12 stop
+
+echo "stop 13"
+sudo /etc/init.d/pgsql.13 stop
+
+echo "stop master"
+sudo /etc/init.d/pgsql.master stop
