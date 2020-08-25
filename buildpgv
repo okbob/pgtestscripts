@@ -5,6 +5,8 @@ sudo date
 PGUSER=$USERNAME
 USE_FRESH_GIT=1
 USE_GIT_CLEAN=1
+USE_CONFIGURE=1
+USE_MAKE_CLEAN=1
 BRANCH=$1
 ENABLE_CASSERT="--enable-cassert"
 
@@ -25,6 +27,8 @@ if [[ "$#" -eq 0 ]]; then
   BRANCH=""
   USE_FRESH_GIT=0
   USE_GIT_CLEAN=0
+  USE_CONFIGURE=0
+  USE_MAKE_CLEAN=0
 
 fi
 
@@ -103,6 +107,9 @@ case $BRANCH in
     export PSQLNAME="psql"
     USE_FRESH_GIT=0
     USE_GIT_CLEAN=0
+    USE_CONFIGURE=0
+    USE_MAKE_CLEAN=1
+
     ;;
 
   *)
@@ -140,15 +147,24 @@ if [[ "$GITBRANCH" != "" ]]; then
   fi
 fi
 
+if [[ $USE_CONFIGURE -eq 1 ]]; then
+
+
 ./configure --enable-tap-tests --enable-debug  \
   CFLAGS="-Wall -Wmissing-prototypes -Wdeclaration-after-statement  -Wendif-labels -Wmissing-format-attribute -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -g -O2 -Werror=switch" \
   --with-libxml  --with-python --prefix=$PREFIX $ENABLE_CASSERT --with-pgport=$PORT
 
-if [[ $? -ne 0 ]]; then
-	exit 1
+  if [[ $? -ne 0 ]]; then
+	  exit 1
+  fi
 fi
 
+if [[ $USE_MAKE_CLEAN -eq 1 ]]; then
+
 make clean
+
+fi
+
 make all -j 4
 
 if [[ $? -ne 0 ]]; then
