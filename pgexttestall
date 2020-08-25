@@ -3,55 +3,41 @@
 pgexttestv 9.5
 
 if [[ $? -ne 0 ]]; then
-
-  sudo /etc/init.d/$STARTSCRIPTNAME stop
   exit 1
 fi
 
 pgexttestv 9.6
 
 if [[ $? -ne 0 ]]; then
-
-  sudo /etc/init.d/$STARTSCRIPTNAME stop
   exit 1
 fi
 
 pgexttestv 10
 
 if [[ $? -ne 0 ]]; then
-
-  sudo /etc/init.d/$STARTSCRIPTNAME stop
   exit 1
 fi
 
 pgexttestv 11
 
 if [[ $? -ne 0 ]]; then
-
-  sudo /etc/init.d/$STARTSCRIPTNAME stop
   exit 1
 fi
 
 pgexttestv 12
 
 if [[ $? -ne 0 ]]; then
-
-  sudo /etc/init.d/$STARTSCRIPTNAME stop
   exit 1
 fi
 
 pgexttestv 13
 
 if [[ $? -ne 0 ]]; then
-
-  sudo /etc/init.d/$STARTSCRIPTNAME stop
   exit 1
 fi
 
 pgexttestv master
 
 if [[ $? -ne 0 ]]; then
-
-  sudo /etc/init.d/$STARTSCRIPTNAME stop
   exit 1
 fi

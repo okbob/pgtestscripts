@@ -3,10 +3,34 @@
 sudo date
 
 PGUSER=$USERNAME
+USE_FRESH_GIT=1
+USE_GIT_CLEAN=1
+BRANCH=$1
+ENABLE_CASSERT="--enable-cassert"
+
+if [[ "$1" = "--help" ]]; then
+
+  echo "buildpgv [ --without-cassert ] [ {git branch} ]"
+  exit 1
+
+fi
+
+if [[ "$1" = "--without-cassert" ]]; then
+  BRANCH=$2
+  ENABLE_CASSERT=""
+fi
+
+if [[ "$#" -eq 0 ]]; then
+
+  BRANCH=""
+  USE_FRESH_GIT=0
+  USE_GIT_CLEAN=0
+
+fi
 
 cd /home/pavel/src/postgresql.master/
 
-case $1 in
+case $BRANCH in
   "9.4")
     export GITBRANCH='REL9_4_STABLE'
     export PREFIX="/usr/local/pgsql/9.4"
@@ -71,21 +95,54 @@ case $1 in
     export PSQLNAME="psql"
     ;;
 
+  "current")
+    export GITBRANCH=''
+    export PREFIX="/usr/local/pgsql/master"
+    export PORT="5432"
+    export STARTSCRIPTNAME="pgsql.master"
+    export PSQLNAME="psql"
+    USE_FRESH_GIT=0
+    USE_GIT_CLEAN=0
+    ;;
+
+  *)
+    export GITBRANCH=$BRANCH
+    export PREFIX="/usr/local/pgsql/master"
+    export PORT="5432"
+    export STARTSCRIPTNAME="pgsql.master"
+    export PSQLNAME="psql"
+    USE_FRESH_GIT=0
+    USE_GIT_CLEAN=0
+    ;;
+
 esac
 
-git checkout $GITBRANCH
-git pull
+if [[ $USE_GIT_CLEAN -eq 1 ]]; then
 
-if [[ $? -ne 0 ]]; then
-	exit 1
+  git stash
+
 fi
 
-git stash
-git clean -f -x -d
+if [[ "$GITBRANCH" != "" ]]; then
+
+  git checkout $GITBRANCH
+
+  if [[ $USE_GIT_CLEAN -eq 1 ]]; then
+
+    git clean -f -x -d
+
+  fi
+
+  if [[ $USE_FRESH_GIT -eq 1 ]]; then
+
+    git pull
+
+  fi
+fi
 
 ./configure --enable-tap-tests --enable-debug  \
   CFLAGS="-Wall -Wmissing-prototypes -Wdeclaration-after-statement  -Wendif-labels -Wmissing-format-attribute -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -g -O2 -Werror=switch" \
-  --with-libxml  --with-python --enable-cassert --prefix=$PREFIX --with-pgport=$PORT
+  --with-libxml  --with-python --prefix=$PREFIX $ENABLE_CASSERT --with-pgport=$PORT
 
 if [[ $? -ne 0 ]]; then
 	exit 1
