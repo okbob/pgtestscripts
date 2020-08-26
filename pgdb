@@ -1,0 +1,4 @@
+#!/usr/bin/bash
+
+sudo gdb -p `ps ax| grep postgres | grep idle | cut -d ' ' -f2` -q --eval-command=c
+
