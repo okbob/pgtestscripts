@@ -151,8 +151,7 @@ if [[ $USE_CONFIGURE -eq 1 ]]; then
 
 
 ./configure --enable-tap-tests --enable-debug  \
-  CFLAGS="-Wall -Wmissing-prototypes -Wdeclaration-after-statement  -Wendif-labels -Wmissing-format-attribute -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -g -O2 -Werror=switch" \
-  --with-libxml  --with-python --prefix=$PREFIX $ENABLE_CASSERT --with-pgport=$PORT
+    --with-libxml  --with-python --prefix=$PREFIX $ENABLE_CASSERT --with-pgport=$PORT
 
   if [[ $? -ne 0 ]]; then
 	  exit 1
