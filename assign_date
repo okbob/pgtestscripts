@@ -1,0 +1,18 @@
+#!/usr/bin/bash
+
+for fn in [0-9]*.patch
+do
+	fn=${fn%.*}
+	mark=`date +%Y%m%d`
+	if [ ! -z $1 ]
+	then
+		mark="$mark-$1"
+	fi
+
+	newfn="v$mark-$fn"
+
+	if [ -f $fn.patch ]
+	then
+		mv $fn.patch $newfn.patch
+	fi
+done
