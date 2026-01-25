@@ -2,6 +2,10 @@
 
 sudo date
 
+export LLVM_CONFIG=/usr/lib64/llvm21/bin/llvm-config
+export CLANG=/usr/lib64/llvm21/bin/clang
+
+
 PGUSER=$USERNAME
 USE_FRESH_GIT=1
 USE_GIT_CLEAN=1
@@ -9,6 +13,8 @@ USE_CONFIGURE=1
 USE_MAKE_CLEAN=1
 BRANCH=$1
 ENABLE_CASSERT="--enable-cassert"
+ENABLE_INJECTP=""
+LOCALE_PROVIDER=""
 
 if [[ "$1" = "--help" ]]; then
 
@@ -32,7 +38,7 @@ if [[ "$#" -eq 0 ]]; then
 
 fi
 
-cd /home/pavel/src/postgresql.master/
+cd /home/pavel/src/postgresql/
 
 case $BRANCH in
   "9.4")
@@ -81,6 +87,9 @@ case $BRANCH in
     export PORT="5412"
     export STARTSCRIPTNAME="pgsql.12"
     export PSQLNAME="psql-12"
+    export USE_LLVM="--with-llvm"
+    export WITH_PYTHON="--with-python"
+    export WITH_LIBXML="--with-libxml"
     ;;
 
   "13")
@@ -89,6 +98,78 @@ case $BRANCH in
     export PORT="5413"
     export STARTSCRIPTNAME="pgsql.13"
     export PSQLNAME="psql-13"
+    export USE_LLVM="--with-llvm"
+    export WITH_PYTHON="--with-python"
+    export WITH_LIBXML="--with-libxml"
+    ;;
+
+  "14")
+    export GITBRANCH='REL_14_STABLE'
+    export PREFIX="/usr/local/pgsql/14"
+    export PORT="5414"
+    export STARTSCRIPTNAME="pgsql.14"
+    export PSQLNAME="psql-14"
+    export USE_LLVM="--with-llvm"
+    export WITH_PYTHON="--with-python"
+    export WITH_LIBXML="--with-libxml"
+    ;;
+
+  "15")
+    export GITBRANCH='REL_15_STABLE'
+    export PREFIX="/usr/local/pgsql/15"
+    export PORT="5415"
+    export STARTSCRIPTNAME="pgsql.15"
+    export PSQLNAME="psql-15"
+    export USE_LLVM="--with-llvm"
+    export WITH_PYTHON="--with-python"
+    export WITH_LIBXML="--with-libxml"
+    ;;
+
+  "15gd")
+    export GITBRANCH='GoodData-15'
+    export PREFIX="/usr/local/pgsql/15"
+    export PORT="5415"
+    export STARTSCRIPTNAME="pgsql.15"
+    export PSQLNAME="psql-15"
+    export USE_LLVM="--with-llvm"
+    export WITH_PYTHON="--with-python"
+    export WITH_LIBXML="--with-libxml"
+    ;;
+
+  "16")
+    export GITBRANCH='REL_16_STABLE'
+    export PREFIX="/usr/local/pgsql/16"
+    export PORT="5416"
+    export STARTSCRIPTNAME="pgsql.16"
+    export PSQLNAME="psql-16"
+    export INITDBOPT='-c work_mem="64MB" -c shared_buffers="512MB"'
+    export USE_LLVM="--with-llvm"
+    export WITH_PYTHON="--with-python"
+    export WITH_LIBXML="--with-libxml"
+    ;;
+
+  "17")
+    export GITBRANCH='REL_17_STABLE'
+    export PREFIX="/usr/local/pgsql/17"
+    export PORT="5417"
+    export STARTSCRIPTNAME="pgsql.17"
+    export PSQLNAME="psql-17"
+    export INITDBOPT='-c work_mem="64MB" -c shared_buffers="512MB"'
+    export USE_LLVM="--with-llvm"
+    export WITH_PYTHON="--with-python"
+    export WITH_LIBXML="--with-libxml"
+    ;;
+
+  "18")
+    export GITBRANCH='REL_18_STABLE'
+    export PREFIX="/usr/local/pgsql/18"
+    export PORT="5418"
+    export STARTSCRIPTNAME="pgsql.18"
+    export PSQLNAME="psql-18"
+    export INITDBOPT='-c work_mem="64MB" -c shared_buffers="512MB"'
+    export USE_LLVM="--with-llvm"
+    export WITH_PYTHON="--with-python"
+    export WITH_LIBXML="--with-libxml"
     ;;
 
   "master")
@@ -97,6 +178,14 @@ case $BRANCH in
     export PORT="5432"
     export STARTSCRIPTNAME="pgsql.master"
     export PSQLNAME="psql"
+    export INITDBOPT='-c work_mem="64MB" -c shared_buffers="512MB"'
+    export USE_LLVM="--with-llvm"
+    export WITH_PYTHON="--with-python"
+    export WITH_LIBXML="--with-libxml"
+    export WITH_LIBURING="--with-liburing"
+    export CFLAGS=" -Wimplicit-function-declaration -Wall -Wmissing-prototypes -Werror=return-type -Wpointer-arith -Wdeclaration-after-statement -Wendif-labels -Wmissing-format-attribute -Wformat-security -fno-strict-aliasing -fwrapv -Wno-unused-command-line-argument"
+    export ENABLE_INJECTP="--enable-injection-points"
+    export LOCALE_PROVIDER="--locale-provider=icu --icu-locale=cs"
     ;;
 
   "current")
@@ -105,11 +194,14 @@ case $BRANCH in
     export PORT="5432"
     export STARTSCRIPTNAME="pgsql.master"
     export PSQLNAME="psql"
-    USE_FRESH_GIT=0
-    USE_GIT_CLEAN=0
-    USE_CONFIGURE=0
-    USE_MAKE_CLEAN=1
-
+    export INITDBOPT='-c work_mem="64MB" -c shared_buffers="512MB"'
+    export USE_FRESH_GIT=0
+    export USE_GIT_CLEAN=0
+    export USE_CONFIGURE=0
+    export USE_MAKE_CLEAN=1
+    export USE_LLVM="--with-llvm"
+    export WITH_LIBXML="--with-libxml"
+    export ENABLE_INJECTP="--enable-injection-points"
     ;;
 
   *)
@@ -118,8 +210,16 @@ case $BRANCH in
     export PORT="5432"
     export STARTSCRIPTNAME="pgsql.master"
     export PSQLNAME="psql"
-    USE_FRESH_GIT=0
-    USE_GIT_CLEAN=0
+    export USE_FRESH_GIT=0
+    export USE_GIT_CLEAN=0
+    export INITDBOPT='-c work_mem="64MB" -c shared_buffers="512MB"'
+    export USE_LLVM="--with-llvm"
+    export CFLAGS=" -Wimplicit-function-declaration -Wall -Wmissing-prototypes -Werror=return-type -Wpointer-arith -Wdeclaration-after-statement -Wendif-labels -Wmissing-format-attribute -Wformat-security -fno-strict-aliasing -fwrapv -Wno-unused-command-line-argument -O2"
+    export CPPFLAGS="-DENFORCE_REGRESSION_TEST_NAME_RESTRICTIONS" # "-DRELCACHE_FORCE_RELEASE -DENFORCE_REGRESSION_TEST_NAME_RESTRICTIONS -DCATCACHE_FORCE_RELEASE"
+    export WITH_LIBXML="--with-libxml"
+    export WITH_LIBURING="--with-liburing"
+    export ENABLE_INJECTP="--enable-injection-points"
+    export LOCALE_PROVIDER="--locale-provider=icu --icu-locale=cs"
     ;;
 
 esac
@@ -147,11 +247,21 @@ if [[ "$GITBRANCH" != "" ]]; then
   fi
 fi
 
+# export ASAN_OPTIONS=detect_leaks=0:abort_on_error=0:disable_coredump=0:strict_string_checks=1:check_initialization_order=1:strict_init_order=1
+# export CPPFLAGS="-Og -fsanitize=address -fsanitize=undefined -fno-sanitize-recover=all -fno-sanitize=nonnull-attribute -fstack-protector" LDFLAGS='-fsanitize=address -fsanitize=undefined -static-libasan'
+
+
 if [[ $USE_CONFIGURE -eq 1 ]]; then
+
+  export CC="ccache gcc"
+#  export CFLAGS=" -Wimplicit-function-declaration -Wall -Wmissing-prototypes -Werror=return-type -Wpointer-arith -Wdeclaration-after-statement  -Wendif-labels -Wmissing-format-attribute -Wformat-security -fno-strict-aliasing -fwrapv -Wno-unused-command-line-argument -O2 -Werror=suggest-attribute=format -Werror=char-subscripts"
+#  export CFLAGS=" -Wimplicit-function-declaration -Wall -Wmissing-prototypes -Werror=return-type -Wpointer-arith -Wdeclaration-after-statement -Werror=unguarded-availability-new -Wendif-labels -Wmissing-format-attribute -Wformat-security -fno-strict-aliasing -fwrapv -Wno-unused-command-line-argument -O2"
 
 
 ./configure --enable-tap-tests --enable-debug  \
-    --with-libxml  --with-python --prefix=$PREFIX $ENABLE_CASSERT --with-pgport=$PORT
+     --with-perl $WITH_PYTHON --prefix=$PREFIX $ENABLE_CASSERT --with-pgport=$PORT \
+    --with-icu  --with-lz4 --with-tcl --enable-depend --with-zlib  --with-uuid=e2fs \
+    $USE_LLVM --with-ssl=openssl $WITH_LIBXML $WITH_LIBURING $ENABLE_INJECTP --enable-tap-tests
 
   if [[ $? -ne 0 ]]; then
 	  exit 1
@@ -164,7 +274,7 @@ make clean
 
 fi
 
-make all -j 4
+make all -j 3
 
 if [[ $? -ne 0 ]]; then
 	exit 1
@@ -177,11 +287,23 @@ fi
 sudo rm -R -f "$PREFIX/include"
 sudo make install
 
+cd contrib
+make -j 3
+sudo make install
+cd ..
+
+cd doc
+make
+
+cd ..
+
 sudo rm -R -f "$PREFIX/data"
 
 sudo mkdir "$PREFIX/data"
 sudo chown postgres:postgres "$PREFIX/data"
-sudo su - postgres -c "$PREFIX/bin/initdb -D $PREFIX/data"
+echo "$PREFIX/bin/initdb -D $PREFIX/data $LOCALE_PROVIDER  $INITDBOPT"
+sudo su - postgres -c "$PREFIX/bin/initdb -D $PREFIX/data $LOCALE_PROVIDER  $INITDBOPT"
+#sudo su - postgres -c "$PREFIX/bin/initdb -D $PREFIX/data $INITDBOPT"
 
 if [[ $? -ne 0 ]]; then
 	exit 1

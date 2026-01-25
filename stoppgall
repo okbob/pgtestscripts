@@ -21,5 +21,8 @@ sudo /etc/init.d/pgsql.12 stop
 echo "stop 13"
 sudo /etc/init.d/pgsql.13 stop
 
+echo "stop 14"
+sudo /etc/init.d/pgsql.14 stop
+
 echo "stop master"
 sudo /etc/init.d/pgsql.master stop

@@ -36,6 +36,31 @@ case $1 in
     export STARTSCRIPTNAME="pgsql.13"
     ;;
 
+  "14")
+    export PREFIX="/usr/local/pgsql/14"
+    export STARTSCRIPTNAME="pgsql.14"
+    ;;
+
+  "15")
+    export PREFIX="/usr/local/pgsql/15"
+    export STARTSCRIPTNAME="pgsql.15"
+    ;;
+
+  "16")
+    export PREFIX="/usr/local/pgsql/16"
+    export STARTSCRIPTNAME="pgsql.16"
+    ;;
+
+  "17")
+    export PREFIX="/usr/local/pgsql/17"
+    export STARTSCRIPTNAME="pgsql.17"
+    ;;
+
+  "18")
+    export PREFIX="/usr/local/pgsql/18"
+    export STARTSCRIPTNAME="pgsql.18"
+    ;;
+
   "master")
     export PREFIX="/usr/local/pgsql/master"
     export STARTSCRIPTNAME="pgsql.master"
