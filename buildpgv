@@ -263,6 +263,14 @@ if [[ $USE_CONFIGURE -eq 1 ]]; then
     --with-icu  --with-lz4 --with-tcl --enable-depend --with-zlib  --with-uuid=e2fs \
     $USE_LLVM --with-ssl=openssl $WITH_LIBXML $WITH_LIBURING $ENABLE_INJECTP --enable-tap-tests
 
+
+#./configure --enable-tap-tests --enable-debug  \
+#     --prefix=$PREFIX $ENABLE_CASSERT --with-pgport=$PORT \
+#     $USE_LLVM   --enable-depend \
+#  --with-ssl=openssl $WITH_LIBXML $WITH_LIBURING $ENABLE_INJECTP --enable-tap-tests
+
+
+
   if [[ $? -ne 0 ]]; then
 	  exit 1
   fi

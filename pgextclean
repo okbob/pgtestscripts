@@ -1,0 +1,6 @@
+#!/usr/bin/bash
+
+export PREFIX="/usr/local/pgsql/master"
+export PATH="$PREFIX/bin:$PATH"
+
+make clean
