@@ -247,7 +247,7 @@ if [[ "$GITBRANCH" != "" ]]; then
   fi
 fi
 
-# export ASAN_OPTIONS=detect_leaks=0:abort_on_error=0:disable_coredump=0:strict_string_checks=1:check_initialization_order=1:strict_init_order=1
+# export ASAN_OPTIONS=detect_leaks=0:abort_on_error=0:disable_coredump=0:strict_string_checks=1:check_initialization_order=1:strict_init_order=1::detect_stack_use_after_return=0
 # export CPPFLAGS="-Og -fsanitize=address -fsanitize=undefined -fno-sanitize-recover=all -fno-sanitize=nonnull-attribute -fstack-protector" LDFLAGS='-fsanitize=address -fsanitize=undefined -static-libasan'
 
 
