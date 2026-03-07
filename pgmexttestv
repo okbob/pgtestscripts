@@ -1,0 +1,80 @@
+#!/usr/bin/bash
+
+export LLVM_CONFIG=llvm-config-19
+
+case $1 in
+  "9.4")
+    export PREFIX="/usr/local/pgsql/9.4"
+    export STARTSCRIPTNAME="pgsql.94"
+    ;;
+
+  "9.5")
+    export PREFIX="/usr/local/pgsql/9.5"
+    export STARTSCRIPTNAME="pgsql.95"
+    ;;
+
+  "9.6")
+    export PREFIX="/usr/local/pgsql/9.6"
+    export STARTSCRIPTNAME="pgsql.96"
+    ;;
+
+  "10")
+    export PREFIX="/usr/local/pgsql/10"
+    export STARTSCRIPTNAME="pgsql.10"
+    ;;
+
+  "11")
+    export PREFIX="/usr/local/pgsql/11"
+    export STARTSCRIPTNAME="pgsql.11"
+    ;;
+
+  "12")
+    export PREFIX="/usr/local/pgsql/12"
+    export STARTSCRIPTNAME="pgsql.12"
+    ;;
+
+  "13")
+    export PREFIX="/usr/local/pgsql/13"
+    export STARTSCRIPTNAME="pgsql.13"
+    ;;
+
+  "14")
+    export PREFIX="/usr/local/pgsql/14"
+    export STARTSCRIPTNAME="pgsql.14"
+    ;;
+
+  "15")
+    export PREFIX="/usr/local/pgsql/15"
+    export STARTSCRIPTNAME="pgsql.15"
+    ;;
+
+  "16")
+    export PREFIX="/usr/local/pgsql/16"
+    export STARTSCRIPTNAME="pgsql.16"
+    ;;
+
+  "17")
+    export PREFIX="/usr/local/pgsql/17"
+    export STARTSCRIPTNAME="pgsql.17"
+    ;;
+
+  "18")
+    export PREFIX="/usr/local/pgsql/18"
+    export STARTSCRIPTNAME="pgsql.18"
+    ;;
+
+  "master")
+    export PREFIX="/usr/local/pgsql/master"
+    export STARTSCRIPTNAME="pgsql.master"
+    ;;
+
+esac
+
+export PATH="$PREFIX/bin:$PATH"
+
+meson setup --wipe --buildtype debug build
+cd build
+ninja
+sudo ninja install
+
+ninja test
