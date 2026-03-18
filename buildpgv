@@ -179,7 +179,7 @@ case $BRANCH in
     export STARTSCRIPTNAME="pgsql.master"
     export PSQLNAME="psql"
     export INITDBOPT='-c work_mem="64MB" -c shared_buffers="512MB"'
-    export USE_LLVM="--with-llvm"
+    #export USE_LLVM="--with-llvm"
     export WITH_PYTHON="--with-python"
     export WITH_LIBXML="--with-libxml"
     export WITH_LIBURING="--with-liburing"
@@ -199,7 +199,7 @@ case $BRANCH in
     export USE_GIT_CLEAN=0
     export USE_CONFIGURE=0
     export USE_MAKE_CLEAN=1
-    export USE_LLVM="--with-llvm"
+    #export USE_LLVM="--with-llvm"
     export WITH_LIBXML="--with-libxml"
     export ENABLE_INJECTP="--enable-injection-points"
     ;;
@@ -213,7 +213,7 @@ case $BRANCH in
     export USE_FRESH_GIT=0
     export USE_GIT_CLEAN=0
     export INITDBOPT='-c work_mem="64MB" -c shared_buffers="512MB"'
-    export USE_LLVM="--with-llvm"
+#    export USE_LLVM="--with-llvm"
     export CFLAGS=" -Wimplicit-function-declaration -Wall -Wmissing-prototypes -Werror=return-type -Wpointer-arith -Wdeclaration-after-statement -Wendif-labels -Wmissing-format-attribute -Wformat-security -fno-strict-aliasing -fwrapv -Wno-unused-command-line-argument -O2"
     export CPPFLAGS="-DENFORCE_REGRESSION_TEST_NAME_RESTRICTIONS" # "-DRELCACHE_FORCE_RELEASE -DENFORCE_REGRESSION_TEST_NAME_RESTRICTIONS -DCATCACHE_FORCE_RELEASE"
     export WITH_LIBXML="--with-libxml"
@@ -254,9 +254,11 @@ fi
 if [[ $USE_CONFIGURE -eq 1 ]]; then
 
   export CC="ccache gcc"
-#  export CFLAGS=" -Wimplicit-function-declaration -Wall -Wmissing-prototypes -Werror=return-type -Wpointer-arith -Wdeclaration-after-statement  -Wendif-labels -Wmissing-format-attribute -Wformat-security -fno-strict-aliasing -fwrapv -Wno-unused-command-line-argument -O2 -Werror=suggest-attribute=format -Werror=char-subscripts"
+  export CFLAGS=" -Wimplicit-function-declaration -Wall -Wmissing-prototypes -Werror=return-type -Wpointer-arith -Wdeclaration-after-statement  -Wendif-labels -Wmissing-format-attribute -Wformat-security -fno-strict-aliasing -fwrapv -Wno-unused-command-line-argument -O2 -Werror=suggest-attribute=format -Werror=char-subscripts -Werror=switch"
 #  export CFLAGS=" -Wimplicit-function-declaration -Wall -Wmissing-prototypes -Werror=return-type -Wpointer-arith -Wdeclaration-after-statement -Werror=unguarded-availability-new -Wendif-labels -Wmissing-format-attribute -Wformat-security -fno-strict-aliasing -fwrapv -Wno-unused-command-line-argument -O2"
 
+#export CFLAGS=-Wall -Wmissing-prototypes -Wpointer-arith -Wdeclaration-after-statement -Werror=vla -Wendif-labels -Wmissing-format-attribute -Wimplicit-fallthrough=5 -Wcast-function-type -Wshadow=compatible-local -Wformat-security -Wmissing-variable-declarations -fno-strict-aliasing -fwrapv -fexcess-precision=standard -Wno-format-truncation -Wno-stringop-truncation -O2 -Werror=switch
+#export CXXFLAGS=-Wall -Wpointer-arith -Wendif-labels -Wmissing-format-attribute -Wimplicit-fallthrough=5 -Wcast-function-type -Wshadow=compatible-local -Wformat-security -fno-strict-aliasing -fwrapv -fexcess-precision=standard -O2
 
 ./configure --enable-tap-tests --enable-debug  \
      --with-perl $WITH_PYTHON --prefix=$PREFIX $ENABLE_CASSERT --with-pgport=$PORT \
